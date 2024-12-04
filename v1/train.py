@@ -12,7 +12,7 @@ from transformers import PreTrainedTokenizerFast
 dataset = load_dataset(
     "grascii/gregg-preanniversary-words",
     split="train",
-    revision="0227610b8aa2cd5587fe6c247b355746825b8b3c,"
+    revision="0227610b8aa2cd5587fe6c247b355746825b8b3c",
 )
 
 
