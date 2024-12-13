@@ -13,6 +13,7 @@ dataset = load_dataset(
     "grascii/gregg-preanniversary-words",
     split="train",
     revision="0227610b8aa2cd5587fe6c247b355746825b8b3c",
+    token="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",
 )
 
 
@@ -28,13 +29,15 @@ tokenizer.decoder = Fuse()
 tokenizer.post_processor = RobertaProcessing(
         ("</s>", 2), ("<s>", 0), add_prefix_space=False)
 
-trainer = WordLevelTrainer(special_tokens=[
-    "<s>",
-    "<pad>",
-    "</s>",
-    "<unk>",
-    "<mask>",
-])
+special_tokens = {
+    "bos_token": "<s>",
+    "pad_token": "<pad>",
+    "eos_token": "</s>",
+    "unk_token": "<unk>",
+    "mask_token": "<mask>",
+}
+
+trainer = WordLevelTrainer(special_tokens=list(special_tokens.values()))
 
 tokenizer.train_from_iterator(
     batch_iterator(),
@@ -42,6 +45,8 @@ tokenizer.train_from_iterator(
     length=len(dataset),
 )
 
-transformers_tokenizer = PreTrainedTokenizerFast(tokenizer_object=tokenizer)
-transformers_tokenizer.pad_token_id = 1
+transformers_tokenizer = PreTrainedTokenizerFast(
+    tokenizer_object=tokenizer,
+    **special_tokens,
+)
 transformers_tokenizer.save_pretrained("tokenizer")
